@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.content.ContentResolver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -47,8 +49,9 @@ public class HomeActivity extends AppCompatActivity implements BookAdapter.BookI
 
         ButterKnife.bind(this);
 
-        databaseHelper = new BookDatabaseHelper(this,
-                null, null, 0);
+        readFromContentProvider();
+
+        databaseHelper = new BookDatabaseHelper(this);
         readFromDatabase();
 
         SnapHelper snapHelper = new LinearSnapHelper();
@@ -99,6 +102,23 @@ public class HomeActivity extends AppCompatActivity implements BookAdapter.BookI
 
     }
 
+    private void readFromContentProvider() {
+
+        String uri = "content://com.bb.betterstorageapp.provider.BookProvider/books/10";
+
+        ContentResolver contentResolver = getContentResolver();
+        Cursor booksCursor = contentResolver.query(Uri.parse(uri), null, null, null, null);
+
+        booksCursor.moveToPosition(-1);
+
+        while (booksCursor.moveToNext()) {
+
+            String bookName = booksCursor.getString(booksCursor.getColumnIndex(BookDatabaseHelper.COLUMN_BOOK_NAME));
+            Log.d("TAG_X", "From Provider : " + bookName);
+        }
+
+        booksCursor.close();
+    }
 
     @Override
     public void deleteBook(Book deleteBook) {

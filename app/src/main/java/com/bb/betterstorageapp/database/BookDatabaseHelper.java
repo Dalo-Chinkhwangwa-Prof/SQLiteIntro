@@ -19,8 +19,8 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_BOOK_PAGES = "book_pages";
     public static final int DB_VERSION = 1;
 
-    public BookDatabaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DATABASE_NAME, factory, DB_VERSION);
+    public BookDatabaseHelper(@Nullable Context context) {
+        super(context, DATABASE_NAME, null, DB_VERSION);
     }
 
     @Override
@@ -53,6 +53,10 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 //        Cursor allBooks = getReadableDatabase().rawQuery("SELECT * FROM "+TABLE_NAME, new String [] {COLUMN_BOOK_ID, COLUMN_BOOK_NAME}, null);
         Cursor allBooks = getReadableDatabase().rawQuery("SELECT * FROM " + TABLE_NAME, null, null);
         return allBooks;
+    }
+
+    public Cursor readSingleBook(String bookID) {
+        return getReadableDatabase().rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_BOOK_ID + " = " + bookID, null);
     }
 
     public void deleteBook(Book deleteBook) {
